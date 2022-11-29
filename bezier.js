@@ -596,6 +596,32 @@ function switchTool(tool) {
       switchDrawButton.className = switchDrawButton.className.replace(' active', '');
       drawing.setTool(tool);
       break;
+    case 'export':
+      console.log( drawing );
+      console.log( drawing.curves[0] );
+      console.log( drawing.curves[0].startPoint );
+      console.log( drawing.curves[0].controlPoints[0] );
+      console.log( drawing.curves[0].endPoint );
+
+      var element = document.createElement('a');
+      var text = "{\n";
+      for (i=0; i<drawing.curves.length; i++) {
+         var c = drawing.curves[i];
+         text += "   {\n";
+         text += "      vec2.new( "+c.startPoint.x.toString()+", "+c.startPoint.y.toString()+" ),\n";
+         text += "      vec2.new( "+(c.controlPoints[0].x-c.startPoint.x).toString()+", "+(c.controlPoints[0].y-c.startPoint.y).toString()+" ),\n";
+         text += "      vec2.new( "+(c.controlPoints[1].x-c.endPoint.x).toString()+", "+(c.controlPoints[1].y-c.endPoint.y).toString()+" ),\n";
+         text += "      vec2.new( "+c.endPoint.x.toString()+", "+c.endPoint.y.toString()+" ),\n";
+         text += "   },\n";
+      }
+      text += "}";
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', 'bezier.lua');
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+      break;
   }
 }
 
